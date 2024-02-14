@@ -13,7 +13,7 @@ const labelTruncation = (label) => {
   return isKoreanLanguage ? (label.length > 6 ? label.substring(0, 6) + '...' : label) : label.length > 8 ? label.substring(0, 8) + '...' : label;
 };
 
-export function IconStylesheet(showIcon, showImage, elements, showMultiproperty, checkNodeCount) {
+export function IconStylesheet(showIcon, showImage, elements, showMultiproperty, checkNodeCount, edgeThickness) {
   let additionalStyles;
   let nodeLabelbackground;
   const handlePieChart = (ele, elements) => {};
@@ -83,12 +83,11 @@ export function IconStylesheet(showIcon, showImage, elements, showMultiproperty,
         'font-family': 'roboto',
         'text-wrap': 'ellipsis',
         'curve-style': 'bezier',
-
         'text-max-width': function (ele) {
           return ele ? ele.data('size') : 55;
         },
-        'border-width': showImage ? '1px !important' : '0px',
-        'border-color': showMultiproperty || showIcon ? 'white !important' : 'grey',
+        'border-width': showImage ? '1px' : '0px',
+        'border-color': showMultiproperty || showIcon ? 'white' : 'grey',
         'text-margin-y': function (node) {
           return (showIcon || showMultiproperty) && node.height() + 10;
         },
@@ -113,10 +112,11 @@ export function IconStylesheet(showIcon, showImage, elements, showMultiproperty,
     {
       selector: 'edge',
       style: {
+        'text-wrap': 'wrap',
         label(ele) {
           return labelTruncation(ele.data('label'));
         },
-        width: '0.5',
+        width: edgeThickness,
         'text-background-color': '#FFF',
         'text-background-opacity': 1,
         'text-background-padding': '3px',
@@ -166,3 +166,4 @@ export function IconStylesheet(showIcon, showImage, elements, showMultiproperty,
     },
   ];
 }
+

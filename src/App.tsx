@@ -32,8 +32,6 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   );
 }
 
-let tempOverLappingNode = [];
-
 export default function App() {
   const cyRef = React.useRef<cytoscape.Core | undefined>();
   const [elements, setElements] = React.useState(() => generateGraph(65));
@@ -43,8 +41,9 @@ export default function App() {
   const [checkNodeCount, setCheckNodeCount] = React.useState(false);
   const [numberOfNodes, setNumberOfNodes] = React.useState(0);
   const [showMultipropertyGraph, setShowMultipropertyGraph] = React.useState(false);
+  const [edgeThickness, setEdgeThickness] = React.useState(0.5);
   const [stylesheet, setStylesheet] = React.useState<Stylesheet[]>(
-    IconStylesheet(showIcon, showImage, elements, showMultipropertyGraph, checkNodeCount)
+    IconStylesheet(showIcon, showImage, elements, showMultipropertyGraph, checkNodeCount, edgeThickness)
   );
 
   const handleShowIcon = () => {
@@ -180,7 +179,7 @@ export default function App() {
 
     allNodes.style({
       'border-color': '#2c3e50',
-      'border-width': '0.5px',
+      'border-width': '0px',
     });
 
     for (let i = 0; i < allNodes.length; i++) {
@@ -200,6 +199,22 @@ export default function App() {
           node2.style('border-width', '2px');
         }
       }
+    }
+  };
+
+  const handleEdgeThicknessIncrement = () => {
+    let tempEdgeThickness = edgeThickness;
+    tempEdgeThickness++;
+    setEdgeThickness(tempEdgeThickness);
+    setStylesheet(IconStylesheet(showIcon, showImage, elements, showMultipropertyGraph, checkNodeCount, tempEdgeThickness));
+  };
+
+  const handleEdgeThicknessdecrement = () => {
+    let tempEdgeThickness = edgeThickness;
+    if (tempEdgeThickness > 0.5) {
+      tempEdgeThickness--;
+      setEdgeThickness(tempEdgeThickness);
+      setStylesheet(IconStylesheet(showIcon, showImage, elements, showMultipropertyGraph, checkNodeCount, tempEdgeThickness));
     }
   };
 
@@ -279,8 +294,12 @@ export default function App() {
               {/* <button style={{ margin: ".5em" }} onClick={handleCheckNodeCount}>
                 {checkNodeCount ? "Default Shape" : "Change Shape"}
               </button> */}
-              <button style={{ margin: '.5em' }}>Edge Thickness +</button>
-              <button style={{ margin: '.5em' }}>Edge Thickness -</button>
+              <button style={{ margin: '.5em' }} onClick={handleEdgeThicknessIncrement}>
+                Edge Thickness +
+              </button>
+              <button style={{ margin: '.5em' }} onClick={handleEdgeThicknessdecrement}>
+                Edge Thickness -
+              </button>
             </td>
             <label>Number of Nodes:</label>
             <input type='number' value={numberOfNodes} onChange={(e) => setNumberOfNodes(e.target.value)} />
