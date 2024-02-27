@@ -34,8 +34,8 @@
     "web-worker": "^1.2.0"
   },
   "scripts": {
-    "start": "rm -rf tsconfig.json && react-scripts start",
-    "build": "react-scripts build",
+    "start": "rm -rf tsconfig.json && react-scripts --openssl-legacy-provider start",
+    "build": "react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
