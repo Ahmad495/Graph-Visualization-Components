@@ -12,6 +12,7 @@
     "@types/react-cytoscapejs": "1.2.2",
     "cytoscape": "3.28.1",
     "cytoscape-cola": "2.5.0",
+    "cytoscape-context-menus": "^4.1.0",
     "cytoscape-cxtmenu": "^3.5.0",
     "cytoscape-dagre": "2.3.2",
     "cytoscape-elk": "2.0.2",

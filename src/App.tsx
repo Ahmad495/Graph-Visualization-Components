@@ -9,18 +9,21 @@ import { generateGraph } from './generateGraph';
 import setupCy from './setupCy';
 import cytoscape, { Stylesheet } from 'cytoscape';
 import cxtmenu from 'cytoscape-cxtmenu';
+import contextMenus from 'cytoscape-context-menus';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEyeSlash, faThumbtack } from '@fortawesome/free-solid-svg-icons';
 import { IconStylesheet } from './stylesheet.js';
 import popper from 'cytoscape-popper';
 import Popper from 'popper.js/dist/umd/popper';
 import 'tippy.js/dist/tippy.css';
+import 'cytoscape-context-menus/cytoscape-context-menus.css';
 // import "font-awesome/css/font-awesome.min.css";
 
 setupCy();
 
 cytoscape.use(cxtmenu);
 cytoscape.use(popper);
+cytoscape.use(contextMenus);
 
 function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   return (
@@ -54,7 +57,7 @@ export default function App() {
 
     tempIconDisplay = !showIcon;
     setShowIcon(!showIcon);
-    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount));
+    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness));
   };
   const handleShowMultiPropertyGraph = () => {
     let tempIconDisplay = false;
@@ -64,7 +67,7 @@ export default function App() {
 
     tempShowMultipropertyGraph = !showMultipropertyGraph;
     setShowMultipropertyGraph(!showMultipropertyGraph);
-    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount));
+    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness));
   };
 
   const handleShowImage = () => {
@@ -76,7 +79,7 @@ export default function App() {
     tempImageDisplay = !showImage;
     setShowImage(!showImage);
     setShowMultipropertyGraph(false);
-    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount));
+    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness));
   };
 
   const handleCheckNodeCount = () => {
@@ -87,7 +90,7 @@ export default function App() {
 
     tempCheckNodeCount = !checkNodeCount;
     setCheckNodeCount(!checkNodeCount);
-    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount));
+    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness));
   };
 
   const initializeTooltip = (cy, selectedNode, isLocked) => {
@@ -193,9 +196,9 @@ export default function App() {
         const overlapY = Math.abs(node1.position().y - node2.position().y) < overlapThreshold;
 
         if (overlapX && overlapY) {
-          node1.style('border-color', 'red');
+          node1.style('border-color', 'white');
           node1.style('border-width', '2px');
-          node2.style('border-color', 'red');
+          node2.style('border-color', 'white');
           node2.style('border-width', '2px');
         }
       }
@@ -216,6 +219,37 @@ export default function App() {
       setEdgeThickness(tempEdgeThickness);
       setStylesheet(IconStylesheet(showIcon, showImage, elements, showMultipropertyGraph, checkNodeCount, tempEdgeThickness));
     }
+  };
+
+  const initializeContextMenu = (cy) => {
+    const contextMenuConfig = {
+      menuItems: [
+        {
+          id: 'lockNode',
+          content: 'Lock Node',
+          tooltipText: 'Tooltip for Option 1',
+          selector: 'node', // Apply this option to nodes
+          onClickFunction: function (event) {
+            const target = event.target || event.cyTarget;
+            initializeTooltip(cy, target.id(), false);
+            target.lock();
+          },
+        },
+        {
+          id: 'unlockNode',
+          content: 'Unlock Node',
+          tooltipText: 'Tooltip for Option 1',
+          selector: 'node', // Apply this option to nodes
+          onClickFunction: function (event) {
+            const target = event.target || event.cyTarget;
+            initializeTooltip(cy, target.id(), true);
+            target.unlock();
+          },
+        },
+      ],
+    };
+
+    cy.contextMenus(contextMenuConfig);
   };
 
   return (
@@ -304,21 +338,22 @@ export default function App() {
             <label>Number of Nodes:</label>
             <input type='number' value={numberOfNodes} onChange={(e) => setNumberOfNodes(e.target.value)} />
             <button onClick={handleChangeNumberOfNodes}>update number of nodes</button>
-            <td>
+            <td style={{ width: '100%' }}>
               <ErrorBoundary FallbackComponent={ErrorFallback}>
                 <CytoscapeComponent
                   elements={elements}
                   style={{
-                    width: '800px',
-                    height: '500px',
+                    width: '100%',
+                    height: '900px',
                     border: '1px solid black',
                   }}
                   layout={layout}
                   stylesheet={stylesheet}
                   cy={(cy) => {
                     cyRef.current = cy;
-                    initializeCxtMenu(cy);
+                    // initializeCxtMenu(cy);
                     detectOverlappingNodes(cy);
+                    initializeContextMenu(cy);
                     cy.on('drag', 'node', (event) => {
                       detectOverlappingNodes(cy);
                     });

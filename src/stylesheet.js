@@ -82,7 +82,6 @@ export function IconStylesheet(showIcon, showImage, elements, showMultiproperty,
         'font-size': '10px',
         'font-family': 'roboto',
         'text-wrap': 'ellipsis',
-        'curve-style': 'bezier',
         'text-max-width': function (ele) {
           return ele ? ele.data('size') : 55;
         },
@@ -128,7 +127,17 @@ export function IconStylesheet(showIcon, showImage, elements, showMultiproperty,
         color(ele) {
           return ele ? ele.data('fontColor') : '#FFF';
         },
-        'curve-style': 'straight',
+        'curve-style': function (ele) {
+          const eleIndex = elements?.findIndex((edge) => edge?.data?.id === ele.data('id'));
+          elements?.map((edge, index) => {
+            if (eleIndex !== index && edge?.data?.source === ele.data('source') && edge?.data?.target === ele.data('target')) {
+              console.log('running', ele.data('label'));
+              return 'bezier';
+            } else {
+              return 'stright';
+            }
+          });
+        },
         'font-size': '8px',
         'text-rotation': 'autorotate',
         'arrow-scale': '0.6',
@@ -166,4 +175,3 @@ export function IconStylesheet(showIcon, showImage, elements, showMultiproperty,
     },
   ];
 }
-

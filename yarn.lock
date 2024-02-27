@@ -4007,6 +4007,11 @@ cytoscape-cola@2.5.0:
   dependencies:
     webcola "^3.4.0"
 
+cytoscape-context-menus@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/cytoscape-context-menus/-/cytoscape-context-menus-4.1.0.tgz#4727bf3538f718fe50547fb4c6d50ffc8228c471"
+  integrity sha512-qbrdRfz8JQuZBZamhzmExPpJvUNR4VA3rcN4qChu4eVplWYU4n8N98A0ksrr2kfmUvCAL529N04KzwZd8xra7w==
+
 cytoscape-cxtmenu@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/cytoscape-cxtmenu/-/cytoscape-cxtmenu-3.5.0.tgz#c1a79e9e63eddfd0a60a287025a36414c897ecf6"
