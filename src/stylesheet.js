@@ -112,7 +112,17 @@ export function IconStylesheet(showIcon, showImage, elements, showMultiproperty,
       selector: 'edge',
       style: {
         'text-wrap': 'wrap',
-        'curve-style': 'straight',
+        'curve-style': function (ele) {
+          let curveType = 'straight';
+          elements?.filter((edge, index) =>
+            index > 0 && edge?.data?.source === ele.data('source') && edge?.data?.target === ele.data('target')
+              ? (curveType = 'bezier')
+              : (curveType = 'straight')
+          );
+
+          console.log(curveType);
+          return curveType;
+        },
         'target-arrow-shape': 'triangle',
         'arrow-scale': '1px',
         label(ele) {
