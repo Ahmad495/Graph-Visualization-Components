@@ -13,7 +13,7 @@ const labelTruncation = (label) => {
   return isKoreanLanguage ? (label.length > 6 ? label.substring(0, 6) + '...' : label) : label.length > 8 ? label.substring(0, 8) + '...' : label;
 };
 
-export function IconStylesheet(showIcon, showImage, elements, showMultiproperty, checkNodeCount, edgeThickness) {
+export function IconStylesheet(showIcon, showImage, elements, showMultiproperty, checkNodeCount, edgeThickness, count) {
   let additionalStyles;
   let nodeLabelbackground;
   const handlePieChart = (ele, elements) => {};
@@ -112,6 +112,9 @@ export function IconStylesheet(showIcon, showImage, elements, showMultiproperty,
       selector: 'edge',
       style: {
         'text-wrap': 'wrap',
+        'curve-style': 'straight',
+        'target-arrow-shape': 'triangle',
+        'arrow-scale': '1px',
         label(ele) {
           return labelTruncation(ele.data('label'));
         },
@@ -122,21 +125,20 @@ export function IconStylesheet(showIcon, showImage, elements, showMultiproperty,
         'target-arrow-color': function (ele) {
           return ele ? ele.data('backgroundColor') : '#FFF';
         },
-        'target-arrow-shape': 'triangle',
-        'arrow-scale': '1px',
         color(ele) {
           return ele ? ele.data('fontColor') : '#FFF';
         },
-        'curve-style': function (ele) {
-          const eleIndex = elements?.findIndex((edge) => edge?.data?.id === ele.data('id'));
-          elements?.map((edge, index) => {
-            if (eleIndex !== index && edge?.data?.source === ele.data('source') && edge?.data?.target === ele.data('target')) {
-              console.log('running', ele.data('label'));
-              return 'bezier';
-            } else {
-              return 'stright';
+        'target-distance-from-node': function (ele) {
+          let distanceValue = 0;
+
+          if (count.hasOwnProperty(ele?.data('target'))) {
+            const targetNodeCount = count[ele?.data('target')];
+            if (targetNodeCount >= 3) {
+              distanceValue = 20;
             }
-          });
+          }
+
+          return distanceValue;
         },
         'font-size': '8px',
         'text-rotation': 'autorotate',
@@ -152,7 +154,8 @@ export function IconStylesheet(showIcon, showImage, elements, showMultiproperty,
         'line-color': '#00E3DB',
         'target-arrow-color': '#B2EBF4',
         'target-arrow-shape': 'triangle',
-        'curve-style': 'bezier',
+        'target-arrow-shape': 'triangle',
+        'arrow-scale': '1px',
         opacity: '1',
       },
     },
@@ -164,7 +167,7 @@ export function IconStylesheet(showIcon, showImage, elements, showMultiproperty,
         'line-color': '#B2EBF4',
         'target-arrow-color': '#B2EBF4',
         'target-arrow-shape': 'triangle',
-        'curve-style': 'bezier',
+        'arrow-scale': '1px',
       },
     },
     {

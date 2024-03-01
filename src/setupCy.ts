@@ -1,14 +1,14 @@
-import { use as cytoscapeUse } from "cytoscape";
+import { use as cytoscapeUse } from 'cytoscape';
 // @ts-ignore
-import klay from "cytoscape-klay";
+import klay from 'cytoscape-klay';
 // @ts-ignore
-import fcose from "cytoscape-fcose";
+import fcose from 'cytoscape-fcose';
 // @ts-ignore
-import cola from "cytoscape-cola";
+import cola from 'cytoscape-cola';
 // @ts-ignore
-import elk from "cytoscape-elk";
+import elk from 'cytoscape-elk';
 // @ts-ignore
-import dagre from "cytoscape-dagre";
+import dagre from 'cytoscape-dagre';
 
 export default function () {
   cytoscapeUse(klay);

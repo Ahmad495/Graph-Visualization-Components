@@ -36,8 +36,9 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
 }
 
 export default function App() {
+  const count = {};
   const cyRef = React.useRef<cytoscape.Core | undefined>();
-  const [elements, setElements] = React.useState(() => generateGraph(65));
+  const [elements, setElements] = React.useState(() => generateGraph(10));
   const [layout, setLayout] = React.useState(layouts.klay);
   const [showIcon, setShowIcon] = React.useState(false);
   const [showImage, setShowImage] = React.useState(false);
@@ -46,7 +47,7 @@ export default function App() {
   const [showMultipropertyGraph, setShowMultipropertyGraph] = React.useState(false);
   const [edgeThickness, setEdgeThickness] = React.useState(0.5);
   const [stylesheet, setStylesheet] = React.useState<Stylesheet[]>(
-    IconStylesheet(showIcon, showImage, elements, showMultipropertyGraph, checkNodeCount, edgeThickness)
+    IconStylesheet(showIcon, showImage, elements, showMultipropertyGraph, checkNodeCount, edgeThickness, count)
   );
 
   const handleShowIcon = () => {
@@ -57,7 +58,7 @@ export default function App() {
 
     tempIconDisplay = !showIcon;
     setShowIcon(!showIcon);
-    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness));
+    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness, count));
   };
   const handleShowMultiPropertyGraph = () => {
     let tempIconDisplay = false;
@@ -67,7 +68,7 @@ export default function App() {
 
     tempShowMultipropertyGraph = !showMultipropertyGraph;
     setShowMultipropertyGraph(!showMultipropertyGraph);
-    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness));
+    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness, count));
   };
 
   const handleShowImage = () => {
@@ -79,7 +80,7 @@ export default function App() {
     tempImageDisplay = !showImage;
     setShowImage(!showImage);
     setShowMultipropertyGraph(false);
-    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness));
+    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness, count));
   };
 
   const handleCheckNodeCount = () => {
@@ -90,7 +91,7 @@ export default function App() {
 
     tempCheckNodeCount = !checkNodeCount;
     setCheckNodeCount(!checkNodeCount);
-    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness));
+    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness, count));
   };
 
   const initializeTooltip = (cy, selectedNode, isLocked) => {
@@ -139,37 +140,37 @@ export default function App() {
     }
   };
 
-  const initializeCxtMenu = (cy) => {
-    cy.cxtmenu({
-      menuRadius: 30,
-      top: '50%',
-      left: '50%',
-      selector: 'node',
-      commands: [
-        {
-          content: ReactDOMServer.renderToString(<FontAwesomeIcon icon={faEyeSlash} size='' />),
-          select(ele) {
-            ele.remove();
-          },
-        },
-        {
-          content: ReactDOMServer.renderToString(<FontAwesomeIcon icon={faThumbtack} size='lg' />),
-          select(ele) {
-            const selectedNode = ele.data('id');
-            let isLocked = false;
-            if (!ele.locked()) {
-              initializeTooltip(cy, selectedNode, isLocked);
-              ele.lock();
-            } else {
-              isLocked = true;
-              initializeTooltip(cy, selectedNode, isLocked);
-              ele.unlock();
-            }
-          },
-        },
-      ],
-    });
-  };
+  // const initializeCxtMenu = (cy) => {
+  //   cy.cxtmenu({
+  //     menuRadius: 30,
+  //     top: '50%',
+  //     left: '50%',
+  //     selector: 'node',
+  //     commands: [
+  //       {
+  //         content: ReactDOMServer.renderToString(<FontAwesomeIcon icon={faEyeSlash} size='' />),
+  //         select(ele) {
+  //           ele.remove();
+  //         },
+  //       },
+  //       {
+  //         content: ReactDOMServer.renderToString(<FontAwesomeIcon icon={faThumbtack} size='lg' />),
+  //         select(ele) {
+  //           const selectedNode = ele.data('id');
+  //           let isLocked = false;
+  //           if (!ele.locked()) {
+  //             initializeTooltip(cy, selectedNode, isLocked);
+  //             ele.lock();
+  //           } else {
+  //             isLocked = true;
+  //             initializeTooltip(cy, selectedNode, isLocked);
+  //             ele.unlock();
+  //           }
+  //         },
+  //       },
+  //     ],
+  //   });
+  // };
 
   const handleChangeNumberOfNodes = () => {
     if (numberOfNodes > 0 && numberOfNodes <= 70) {
@@ -209,7 +210,7 @@ export default function App() {
     let tempEdgeThickness = edgeThickness;
     tempEdgeThickness++;
     setEdgeThickness(tempEdgeThickness);
-    setStylesheet(IconStylesheet(showIcon, showImage, elements, showMultipropertyGraph, checkNodeCount, tempEdgeThickness));
+    setStylesheet(IconStylesheet(false, false, elements, false, checkNodeCount, tempEdgeThickness, count));
   };
 
   const handleEdgeThicknessdecrement = () => {
@@ -217,7 +218,7 @@ export default function App() {
     if (tempEdgeThickness > 0.5) {
       tempEdgeThickness--;
       setEdgeThickness(tempEdgeThickness);
-      setStylesheet(IconStylesheet(showIcon, showImage, elements, showMultipropertyGraph, checkNodeCount, tempEdgeThickness));
+      setStylesheet(IconStylesheet(false, false, elements, false, checkNodeCount, tempEdgeThickness, count));
     }
   };
 
@@ -251,6 +252,20 @@ export default function App() {
 
     cy.contextMenus(contextMenuConfig);
   };
+
+  if (elements?.length > 0) {
+    for (const element of elements) {
+      if (element?.data?.target) {
+        if (count[element?.data?.target]) {
+          count[element?.data?.target] += 1;
+        } else {
+          count[element?.data?.target] = 1;
+        }
+      }
+    }
+  }
+
+  IconStylesheet(showIcon, showImage, elements, showMultipropertyGraph, checkNodeCount, edgeThickness, count);
 
   return (
     <div className='App'>
