@@ -13,7 +13,7 @@ const labelTruncation = (label) => {
   return isKoreanLanguage ? (label.length > 6 ? label.substring(0, 6) + '...' : label) : label.length > 8 ? label.substring(0, 8) + '...' : label;
 };
 
-export function IconStylesheet(showIcon, showImage, elements, showMultiproperty, checkNodeCount, edgeThickness, count, showN1) {
+export function IconStylesheet(showIcon, showImage, elements, showMultiproperty, checkNodeCount, edgeThickness, count, showN1, showCurveEdge) {
   let additionalStyles;
   let nodeLabelbackground;
   const handlePieChart = (ele, elements) => {};
@@ -114,12 +114,13 @@ export function IconStylesheet(showIcon, showImage, elements, showMultiproperty,
         'text-wrap': 'wrap',
         'curve-style': function (ele) {
           let curveType = 'straight';
-          if (showN1) {
-            elements?.filter((edge, index) =>
-              index > 0 && edge?.data?.source === ele.data('source') && edge?.data?.target === ele.data('target')
-                ? (curveType = 'bezier')
-                : (curveType = 'straight')
-            );
+
+          if (showCurveEdge) {
+            elements?.map((edge) => {
+              if (edge?.data?.source === ele.data('source')) {
+                curveType = 'bezier';
+              }
+            });
           }
           return curveType;
         },
