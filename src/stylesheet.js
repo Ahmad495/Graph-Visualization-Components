@@ -16,6 +16,7 @@ const labelTruncation = (label) => {
 export function IconStylesheet(showIcon, showImage, elements, showMultiproperty, checkNodeCount, edgeThickness, count, showN1, showCurveEdge) {
   let additionalStyles;
   let nodeLabelbackground;
+  console.log(showImage);
   const handlePieChart = (ele, elements) => {};
   if (showMultiproperty) {
     additionalStyles = {
@@ -86,7 +87,7 @@ export function IconStylesheet(showIcon, showImage, elements, showMultiproperty,
           return ele ? ele.data('size') : 55;
         },
         'border-width': showImage ? '1px' : '0px',
-        'border-color': showMultiproperty || showIcon ? 'white' : 'grey',
+        'border-color': 'grey',
         'text-margin-y': function (node) {
           return (showIcon || showMultiproperty) && node.height() + 10;
         },

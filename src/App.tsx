@@ -232,8 +232,8 @@ export default function App() {
     const allNodes = cy.nodes();
 
     allNodes.style({
-      'border-color': '#2c3e50',
-      'border-width': '0px',
+      'border-color': 'gray',
+      'border-width': showImage ? '1px' : '0px',
     });
 
     for (let i = 0; i < allNodes.length; i++) {
