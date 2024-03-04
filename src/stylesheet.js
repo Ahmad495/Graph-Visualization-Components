@@ -13,7 +13,7 @@ const labelTruncation = (label) => {
   return isKoreanLanguage ? (label.length > 6 ? label.substring(0, 6) + '...' : label) : label.length > 8 ? label.substring(0, 8) + '...' : label;
 };
 
-export function IconStylesheet(showIcon, showImage, elements, showMultiproperty, checkNodeCount, edgeThickness, count) {
+export function IconStylesheet(showIcon, showImage, elements, showMultiproperty, checkNodeCount, edgeThickness, count, showN1) {
   let additionalStyles;
   let nodeLabelbackground;
   const handlePieChart = (ele, elements) => {};
@@ -114,13 +114,13 @@ export function IconStylesheet(showIcon, showImage, elements, showMultiproperty,
         'text-wrap': 'wrap',
         'curve-style': function (ele) {
           let curveType = 'straight';
-          elements?.filter((edge, index) =>
-            index > 0 && edge?.data?.source === ele.data('source') && edge?.data?.target === ele.data('target')
-              ? (curveType = 'bezier')
-              : (curveType = 'straight')
-          );
-
-          console.log(curveType);
+          if (showN1) {
+            elements?.filter((edge, index) =>
+              index > 0 && edge?.data?.source === ele.data('source') && edge?.data?.target === ele.data('target')
+                ? (curveType = 'bezier')
+                : (curveType = 'straight')
+            );
+          }
           return curveType;
         },
         'target-arrow-shape': 'triangle',
@@ -141,13 +141,14 @@ export function IconStylesheet(showIcon, showImage, elements, showMultiproperty,
         'target-distance-from-node': function (ele) {
           let distanceValue = 0;
 
-          if (count.hasOwnProperty(ele?.data('target'))) {
-            const targetNodeCount = count[ele?.data('target')];
-            if (targetNodeCount >= 3) {
-              distanceValue = 20;
+          if (showN1 && ele.data('source') !== ele.data('target')) {
+            if (count.hasOwnProperty(ele?.data('target'))) {
+              const targetNodeCount = count[ele?.data('target')];
+              if (targetNodeCount >= 3) {
+                distanceValue = 20;
+              }
             }
           }
-
           return distanceValue;
         },
         'font-size': '8px',

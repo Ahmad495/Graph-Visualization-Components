@@ -46,8 +46,9 @@ export default function App() {
   const [numberOfNodes, setNumberOfNodes] = React.useState(0);
   const [showMultipropertyGraph, setShowMultipropertyGraph] = React.useState(false);
   const [edgeThickness, setEdgeThickness] = React.useState(0.5);
+  const [showN1, setShowN1] = React.useState(false);
   const [stylesheet, setStylesheet] = React.useState<Stylesheet[]>(
-    IconStylesheet(showIcon, showImage, elements, showMultipropertyGraph, checkNodeCount, edgeThickness, count)
+    IconStylesheet(showIcon, showImage, elements, showMultipropertyGraph, checkNodeCount, edgeThickness, count, showN1)
   );
 
   const handleShowIcon = () => {
@@ -58,7 +59,9 @@ export default function App() {
 
     tempIconDisplay = !showIcon;
     setShowIcon(!showIcon);
-    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness, count));
+    setStylesheet(
+      IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness, count, showN1)
+    );
   };
   const handleShowMultiPropertyGraph = () => {
     let tempIconDisplay = false;
@@ -68,7 +71,9 @@ export default function App() {
 
     tempShowMultipropertyGraph = !showMultipropertyGraph;
     setShowMultipropertyGraph(!showMultipropertyGraph);
-    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness, count));
+    setStylesheet(
+      IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness, count, showN1)
+    );
   };
 
   const handleShowImage = () => {
@@ -80,7 +85,9 @@ export default function App() {
     tempImageDisplay = !showImage;
     setShowImage(!showImage);
     setShowMultipropertyGraph(false);
-    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness, count));
+    setStylesheet(
+      IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness, count, showN1)
+    );
   };
 
   const handleCheckNodeCount = () => {
@@ -91,7 +98,9 @@ export default function App() {
 
     tempCheckNodeCount = !checkNodeCount;
     setCheckNodeCount(!checkNodeCount);
-    setStylesheet(IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness, count));
+    setStylesheet(
+      IconStylesheet(tempIconDisplay, tempImageDisplay, elements, tempShowMultipropertyGraph, tempCheckNodeCount, edgeThickness, count, showN1)
+    );
   };
 
   const initializeTooltip = (cy, selectedNode, isLocked) => {
@@ -210,7 +219,7 @@ export default function App() {
     let tempEdgeThickness = edgeThickness;
     tempEdgeThickness++;
     setEdgeThickness(tempEdgeThickness);
-    setStylesheet(IconStylesheet(false, false, elements, false, checkNodeCount, tempEdgeThickness, count));
+    setStylesheet(IconStylesheet(false, false, elements, false, checkNodeCount, tempEdgeThickness, count, showN1));
   };
 
   const handleEdgeThicknessdecrement = () => {
@@ -218,8 +227,15 @@ export default function App() {
     if (tempEdgeThickness > 0.5) {
       tempEdgeThickness--;
       setEdgeThickness(tempEdgeThickness);
-      setStylesheet(IconStylesheet(false, false, elements, false, checkNodeCount, tempEdgeThickness, count));
+      setStylesheet(IconStylesheet(false, false, elements, false, checkNodeCount, tempEdgeThickness, count, showN1));
     }
+  };
+
+  const handleShowN1 = () => {
+    let tempShowN1 = showN1;
+    tempShowN1 = !showN1;
+    setShowN1(tempShowN1);
+    setStylesheet(IconStylesheet(showIcon, showImage, elements, showMultipropertyGraph, checkNodeCount, edgeThickness, count, tempShowN1));
   };
 
   const initializeContextMenu = (cy) => {
@@ -348,6 +364,9 @@ export default function App() {
               </button>
               <button style={{ margin: '.5em' }} onClick={handleEdgeThicknessdecrement}>
                 Edge Thickness -
+              </button>
+              <button style={{ margin: '.5em' }} onClick={handleShowN1}>
+                show N:1 Relation
               </button>
             </td>
             <label>Number of Nodes:</label>
